@@ -1,4 +1,4 @@
-#**notoo** 
+# Notoo
 Innowacyjna aplikacja mobilna do tworzenia notatek i nauki poprzez fiszki.  
 Celem aplikacji jest wspieranie młodych ludzi w efektywnej nauce oraz organizacji wiedzy, a jednocześnie promowanie samodzielnej edukacji i kreatywnego myślenia.
 
