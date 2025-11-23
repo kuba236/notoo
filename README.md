@@ -33,18 +33,42 @@ When you're ready, run:
 npm run reset-project
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+**notoo** to innowacyjna aplikacja mobilna do tworzenia notatek i nauki poprzez fiszki.  
+Celem aplikacji jest wspieranie młodych ludzi w efektywnej nauce oraz organizacji wiedzy, a jednocześnie promowanie samodzielnej edukacji i kreatywnego myślenia.
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
+Aplikacja umożliwia:
+- Tworzenie standardowych notatek.
+- Automatyczne przekształcanie notatek w **fiszki** w momencie użycia znaków specjalnych (`-` lub `:`) w formacie:  
 Join our community of developers creating universal apps.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- Funkcję **odtwarzania dźwięku**, która pozwala ćwiczyć wymowę i ułatwia naukę słówek lub pojęć obcojęzycznych.
+- Prosty i intuicyjny interfejs, dzięki któremu użytkownik szybko odnajduje się w aplikacji.
+
+Aplikacja łączy tradycyjną metodę notowania z nowoczesnymi technologiami wspierającymi naukę języków i zapamiętywanie informacji. Jest idealnym narzędziem dla uczniów, studentów oraz wszystkich, którzy chcą uczyć się efektywnie i w sposób angażujący.
+
+---
+
+## Funkcjonalności
+
+- **Tworzenie notatek** – zapisuj pomysły, definicje i ważne informacje.
+- **Automatyczne fiszki** – zamień notatki w fiszki, używając formatu `pojęcie : definicja`.
+- **Nauka przez wymowę** – odsłuchuj fiszki, ćwicz poprawną wymowę słów i pojęć.
+- **Organizacja materiału** – przejrzysty układ fiszek pozwala szybko powtarzać materiał.
+- **Responsywny design** – aplikacja działa płynnie na różnych urządzeniach mobilnych.
+
+---
+
+## Technologie
+
+- React Native + Expo
+- AsyncStorage (lokalne przechowywanie notatek i fiszek)
+- Expo Speech (odtwarzanie dźwięku i nauka wymowy)
+- Stylowanie: Tailwind / StyleSheet
+
+---
+
+## Instalacja i uruchomienie
+
+1. **Sklonuj repozytorium:**
+```bash
+git clone https://github.com/kuba236/notoo.git
