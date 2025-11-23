@@ -25,7 +25,7 @@ import Animated, {
     withTiming
 } from 'react-native-reanimated';
 
-import { styles } from './NoteDetailStyles';
+import styles  from './NoteDetailStyles';
 
 import GlassCard from '../../components/ui/GlassCard';
 import { COLORS } from '../../constants/colors';
