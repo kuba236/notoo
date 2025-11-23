@@ -27,7 +27,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: COLORS.bg } }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="note/[id]" options={{ presentation: 'card' }} /> 
-        <Stack.Screen name="add" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="add/index" options={{ presentation: 'modal' }} />
       </Stack>
     </NotesProvider>
   );

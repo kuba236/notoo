@@ -3,8 +3,7 @@ import { COLORS } from '../../constants/colors';
 
 const { width } = Dimensions.get('window');
 
-// --- DEFINICJE STYLÓW ---
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: COLORS.bg },
     imageBackground: { position: 'absolute', top: 0, width: width, height: width * 1.2 },
     navbar: {
@@ -24,13 +23,11 @@ export const styles = StyleSheet.create({
     bodyText: { color: COLORS.text, fontSize: 18, lineHeight: 28, fontFamily: 'System' },
     input: { color: COLORS.text, fontSize: 18, lineHeight: 28, minHeight: 200, textAlignVertical: 'top' },
 
-    // STUDY MODE STYLES
     studyContainer: { flex: 1, backgroundColor: '#000' },
     studyHeader: { paddingTop: 60, paddingHorizontal: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
     closeBtn: { padding: 8 },
     progressText: { color: COLORS.text, fontSize: 16, fontWeight: '600', fontFamily: 'Geo' },
     
-    // NOWE STYLE DLA PRZEŁĄCZNIKA GŁOSOWEGO
     voiceToggleBtn: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -62,7 +59,7 @@ export const styles = StyleSheet.create({
         borderWidth: 2, borderColor: 'rgba(255,255,255,0.15)'
     },
     flashcardBack: {
-        // nothing specific here
+
     },
     cardGradient: { flex: 1, padding: 30, justifyContent: 'center', alignItems: 'center' },
     cardLabel: { color: 'rgba(255,255,255,0.3)', fontSize: 14, fontWeight: 'bold', letterSpacing: 2, marginBottom: 20 },
@@ -75,7 +72,6 @@ export const styles = StyleSheet.create({
     btnKnown: { backgroundColor: '#32D74B' },
     controlText: { color: '#FFF', fontWeight: 'bold', fontSize: 16 },
 
-    // STYLE DLA TRYBU GŁOSOWEGO
     voiceSection: {
         flexDirection: 'column',
         alignItems: 'center',
@@ -107,7 +103,6 @@ export const styles = StyleSheet.create({
         minHeight: 40,
     },
 
-    // STYLES DLA MODALI
     modalOverlay: {
         flex: 1,
         justifyContent: 'center',
@@ -177,3 +172,5 @@ export const styles = StyleSheet.create({
         fontWeight: '600',
     },
 });
+
+export default styles;

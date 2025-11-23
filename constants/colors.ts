@@ -3,7 +3,7 @@ export const COLORS = {
   surface: 'rgba(28, 28, 30, 0.6)',
   surfaceHighlight: 'rgba(44, 44, 46, 0.8)',
   secondary:"#f00",
-  primary: '#0A84FF', // Apple Blue
+  primary: '#0A84FF',
   accent: '#BF5AF2',  // Modern Purple
   text: '#FFFFFF',
   textSec: '#8E8E93',

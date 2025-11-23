@@ -25,8 +25,6 @@ import Animated, {
     withTiming
 } from 'react-native-reanimated';
 
-// --- ZAŁOŻENIE: STYLE SĄ W ZEWNĘTRZNYM PLIKU ---
-// Zakładam istnienie pliku ./NoteDetailStyles i konieczne jest dodanie editStyles na końcu tego pliku
 import { styles } from './NoteDetailStyles';
 
 import GlassCard from '../../components/ui/GlassCard';
@@ -36,28 +34,21 @@ import { Anchor, Note } from '../../types/Note';
 
 const { width } = Dimensions.get('window');
 
-// --- STAŁE KODY JĘZYKOWE ---
 const POLISH_CODE = 'pl';
 const DEUTSCH_CODE = 'de-DE';
 const ENGLISH_CODE = 'en-US';
 
-// --- TYPY DLA FISZEK ---
 type Flashcard = {
-    front: string; // Słówko Obce
-    back: string;  // Tłumaczenie Polskie
+    front: string; 
+    back: string;  
     anchor: Anchor;
 };
 
-// --- TYP KIERUNKU NAUKI ---
 type StudyDirection = 'foreignToPolish' | 'polishToForeign';
 
-// --- SYNAPSE ENGINE (Logika Parsowania) ---
-// --- SYNAPSE ENGINE (Logika Parsowania) ---
-// Pełna lista separatorów, w tym myślniki ze spacjami i bez, oraz dwukropek.
-const SEPARATORS = [':', ' - ', '—', '–', '-', ' : ']; // Dodano: '-', ' : '
+const SEPARATORS = [':', ' - ', '—', '–', '-', ' : ']; 
 
 const generateCardsFromNote = (note: Note): Flashcard[] => {
-    // Określenie treści do parsowania
     const content = note.type === 'mixed' 
         ? (note.textContent || '') 
         : (note.type === 'vocab_list' ? note.textContent || note.content : note.content);
@@ -65,7 +56,6 @@ const generateCardsFromNote = (note: Note): Flashcard[] => {
     if (!content) return [];
 
     const generated: Flashcard[] = [];
-    // Dzielenie na linie, pomijanie pustych
     const lines = content.split('\n').filter((l: string) => l.trim().length > 0); 
 
     let lastHeader = 'Recall Concept';
@@ -74,20 +64,15 @@ const generateCardsFromNote = (note: Note): Flashcard[] => {
     lines.forEach((line: string) => {
         const trimmedLine = line.trim();
 
-        // 1. Logika Nagłówka/Sekcji (bez zmian)
         if (!isVocabList && trimmedLine.length > 3 && trimmedLine.endsWith(':')) {
             lastHeader = trimmedLine.replace(':', '').trim();
             return;
         }
-
-        // 2. Wyszukiwanie elastycznego separatora
         let separatorChar: string | null = null;
         let separatorIndex = -1;
-        
-        // Znajdź pierwszy separator z rozszerzonej listy
+
         for (const candidate of SEPARATORS) {
             const index = trimmedLine.indexOf(candidate);
-            // Upewniamy się, że separator nie jest na początku (index > 0)
             if (index > 0) { 
                  if (separatorIndex === -1 || index < separatorIndex) {
                     separatorChar = candidate;
@@ -95,12 +80,9 @@ const generateCardsFromNote = (note: Note): Flashcard[] => {
                 }
             }
         }
-        
-        // 3. Parsowanie fiszki na podstawie separatora
         if (separatorChar && separatorIndex !== -1) {
-            // Część 1: Przed separatorem
+
             const part1 = trimmedLine.substring(0, separatorIndex).trim();
-            // Część 2: Po separatorze
             const part2 = trimmedLine.substring(separatorIndex + separatorChar.length).trim(); 
              
              if (part1 && part2) {
@@ -113,12 +95,10 @@ const generateCardsFromNote = (note: Note): Flashcard[] => {
              }
         }
 
-        // 4. Obsługa punktów listy (dla fiszek kontekstowych) - jako fallback, jeśli nie znaleziono separatora
+        
         if (!isVocabList && (trimmedLine.startsWith('*') || trimmedLine.startsWith('•') || trimmedLine.startsWith('-'))) {
-             // Jeśli linia zaczyna się od punktora, ale nie jest to format fiszki (np. " - " jest już sprawdzone jako separator)
              const cleanedLine = trimmedLine.startsWith('-') ? trimmedLine.substring(1).trim() : trimmedLine.substring(1).trim();
-            
-             // Dodajemy tylko jeśli linia faktycznie zawiera treść po punktorze
+             
              if (cleanedLine) {
                  generated.push({
                      front: `Wymień z kategorii: ${lastHeader}`,
@@ -130,7 +110,6 @@ const generateCardsFromNote = (note: Note): Flashcard[] => {
         }
     });
 
-    // Obsługa notatek obrazkowych (bez zmian)
     if (note.type === 'image' || note.type === 'mixed') {
         generated.unshift({
             front: `${note.anchor.emoji} Visual Recall: ${note.folder}`,
@@ -142,7 +121,6 @@ const generateCardsFromNote = (note: Note): Flashcard[] => {
     return generated;
 };
 
-// --- KOMPONENTY MODALNE (Bez zmian) ---
 const EngineFailedModal: React.FC<{ visible: boolean, onClose: () => void }> = ({ visible, onClose }) => (
     <Modal animationType="fade" transparent={true} visible={visible} onRequestClose={onClose}>
         <View style={styles.modalOverlay}>
@@ -206,7 +184,7 @@ const SessionCompleteModal: React.FC<{ visible: boolean, onClose: () => void }> 
     </Modal>
 );
 
-// --- KOMPONENT: Wybór Folderu w Edycji (Bez zmian) ---
+
 const FolderPicker: React.FC<{ 
     currentFolder: string; 
     setFolder: (f: string) => void; 
@@ -255,10 +233,7 @@ const FolderPicker: React.FC<{
         </View>
     );
 };
-// --- KONIEC KOMPONENTU WYBORU FOLDERU ---
 
-
-// --- GŁÓWNY KOMPONENT ---
 export default function NoteDetail() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
@@ -290,9 +265,7 @@ export default function NoteDetail() {
 
     const rotate = useSharedValue(0);
 
-    // --- FUNKCJE OBSŁUGI FISZEK (DEFINICJE PRZENIESIONE DO GŁÓWNEGO KOMPONENTU) ---
 
-    // 1. Zabezpieczona funkcja zwracająca Pytanie (Front) i Język
     const getCurrentFront = (card: Flashcard, direction: StudyDirection): { text: string, lang: string } => {
         if (!card) return { text: '', lang: POLISH_CODE };
 
@@ -305,22 +278,19 @@ export default function NoteDetail() {
         };
     };
 
-    // 2. Funkcja zwracająca Odpowiedź (Back)
     const getCurrentBack = (card: Flashcard, direction: StudyDirection): string => {
         if (!card) return '';
         
         return direction === 'foreignToPolish' ? card.back : card.front;
     };
-    
-    // 3. Obsługa mowy (tekst na mowę)
+
     const speakQuestion = (text: string, langCode: string) => {
         if (isListening) return; 
         const lang = langCode.includes('-') ? langCode.split('-')[0] : langCode;
-        // Wymagane, aby langCode było zgodne z wymaganiami Speech.speak (np. 'de' zamiast 'de-DE')
         Speech.speak(text, { language: lang.toLowerCase(), pitch: 1.0, rate: 0.95 });
     };
 
-    // 4. Przełączanie kierunku nauki
+
     const toggleDirection = () => {
         const newDirection: StudyDirection = studyDirection === 'foreignToPolish' ? 'polishToForeign' : 'foreignToPolish';
         setStudyDirection(newDirection);
@@ -331,13 +301,12 @@ export default function NoteDetail() {
         
         if (isVoiceModeActive && cards.length > 0) {
             const currentCard = cards[currentCardIdx];
-            // Używamy bezpiecznej funkcji, która zawsze zwraca obiekt
             const { text, lang } = getCurrentFront(currentCard, newDirection); 
             speakQuestion(text, lang);
         }
     };
     
-    // 5. Przełączanie trybu głosowego
+
     const toggleVoiceMode = () => {
         const newState = !isVoiceModeActive;
         setIsVoiceModeActive(newState);
@@ -351,8 +320,7 @@ export default function NoteDetail() {
             speakQuestion(cardDetails.text, cardDetails.lang);
         }
     };
-    
-    // 6. Symulacja obsługi odpowiedzi głosowej
+
     const handleVoiceResponse = async () => {
         if (isListening) {
             setIsListening(false);
@@ -365,7 +333,7 @@ export default function NoteDetail() {
         setVoiceResponse('');
 
         try {
-            // Symulacja: Słuchanie (3s) -> Przetwarzanie (2s) -> Odpowiedź (Auto Flip)
+           
             setTimeout(() => {
                 setSpeechRecognitionStatus('processing');
             }, 3000); 
@@ -386,10 +354,6 @@ export default function NoteDetail() {
         }
     };
     
-    // --- KONIEC FUNKCJI OBSŁUGI FISZEK ---
-    
-    
-    // --- ANIMATED STYLES (Bez zmian) ---
     const frontAnimatedStyle = useAnimatedStyle(() => {
         const rotateValue = interpolate(rotate.value, [0, 180], [0, 180]);
         return {
@@ -408,12 +372,11 @@ export default function NoteDetail() {
         };
     });
 
-    // --- LOGIKA USTAWIENIA STANU POCZĄTKOWEGO (Bez zmian) ---
+
     useEffect(() => {
     const found = notes.find(n => n.id === id);
     if (found) {
 
-        // NIE MA setNote(found); ← USUNIĘTE
 
         const contentForEdit =
             found.type === 'image'
@@ -442,7 +405,6 @@ export default function NoteDetail() {
 
     
     
-    // --- OBSŁUGA FISZEK ---
     const startStudy = () => {
         if (!note) return;
         const generated = generateCardsFromNote(note as Note);
@@ -488,7 +450,7 @@ export default function NoteDetail() {
                     if (isVoiceModeActive) {
                         const nextCard = cards[nextIdx];
                         if (nextCard) {
-                            // POPRAWKA: Zabezpieczony dostęp
+                            
                             const cardDetails = getCurrentFront(nextCard, studyDirection); 
                             speakQuestion(cardDetails.text, cardDetails.lang); 
                         }
@@ -504,7 +466,7 @@ export default function NoteDetail() {
         }, 200);
     };
 
-    // --- FUNKCJA ZAPISU (Bez zmian) ---
+    
     const handleSave = async () => {
     if (!note || !id) return;
     
@@ -516,12 +478,12 @@ export default function NoteDetail() {
     const updates: Partial<Note> = {};
     let shouldUpdate = false;
     
-    // 1. Sprawdzenie zmiany folderu
+    
     if (finalFolder !== note.folder) {
         updates.folder = finalFolder;
         shouldUpdate = true;
         
-        // Auto język
+        
         if (finalFolder === 'Niemiecki') {
             updates.targetLanguageCode = DEUTSCH_CODE;
         } else if (finalFolder === 'Angielski') {
@@ -533,7 +495,7 @@ export default function NoteDetail() {
         updates.targetLanguageCode = note.targetLanguageCode;
     }
 
-    // 3. Sprawdzenie zmiany treści
+    
     const contentField =
         (note.type === 'mixed' || note.type === 'vocab_list')
             ? 'textContent'
@@ -546,12 +508,11 @@ export default function NoteDetail() {
         shouldUpdate = true;
     }
     
-    // 4. Aktualizacja
+    
     if (shouldUpdate) {
         await updateNote(id as string, updates); 
 
-        // ❗❗ TO BYŁO = DO KOSZA
-        // setNote(prev => prev ? { ...prev, ...updates } : null);
+       
 
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } else {
@@ -579,13 +540,13 @@ export default function NoteDetail() {
     const currentCard = cards[currentCardIdx];
     const isLanguageFolder = note.folder === 'Niemiecki' || note.folder === 'Angielski';
 
-    // --- STUDY MODE VIEW ---
+    
     if (studyMode && cards.length > 0) {
         
         const anchorColor = currentCard.anchor.color;
         const anchorEmoji = currentCard.anchor.emoji;
         
-        // Zabezpieczone pobieranie content i lang
+        
         const cardDetails = currentCard ? getCurrentFront(currentCard, studyDirection) : undefined;
         const frontContent = cardDetails?.text || '';
         const frontLangLabel = cardDetails?.lang?.toUpperCase() || '';
@@ -598,7 +559,7 @@ export default function NoteDetail() {
             <View style={styles.studyContainer}>
                 <LinearGradient colors={['#000', anchorColor + '10']} style={StyleSheet.absoluteFill} />
 
-                {/* Header */}
+                
                 <View style={styles.studyHeader}>
                     <TouchableOpacity onPress={() => { Speech.stop(); setStudyMode(false); setIsVoiceModeActive(false); }} style={styles.closeBtn}>
                         <Ionicons name="close" size={24} color="#FFF" />
@@ -642,14 +603,14 @@ export default function NoteDetail() {
                     </Text>
                 </View>
 
-                {/* 3D Card Area */}
+                
                 <View style={styles.cardArea}>
                     <TouchableOpacity
                         activeOpacity={1}
                         onPress={isListening ? () => {} : handleFlip}
                         style={styles.cardWrapper}
                     >
-                        {/* FRONT (Pytanie) */}
+                        
                         <Animated.View style={[styles.flashcard, frontAnimatedStyle]}>
                             <LinearGradient
                                 colors={['#2C2C2E', '#1C1C1E']}
@@ -661,7 +622,7 @@ export default function NoteDetail() {
                             </LinearGradient>
                         </Animated.View>
 
-                        {/* BACK (Odpowiedź) */}
+                        
                         <Animated.View style={[styles.flashcard, styles.flashcardBack, backAnimatedStyle]}>
                             <LinearGradient colors={[anchorColor, anchorColor + 'CC']} style={styles.cardGradient}>
                                 <Text style={[styles.cardLabel, { color: 'rgba(255,255,255,0.7)' }]}>SYNAPSE ACTIVATED</Text>
@@ -673,7 +634,7 @@ export default function NoteDetail() {
                     </TouchableOpacity>
                 </View>
 
-                {/* SEKCJA: VOICE RESPONSE */}
+                
                 {isLanguageFolder && isVoiceModeActive && !isFlipped && (
                     <View style={styles.voiceSection}>
                         <TouchableOpacity
@@ -695,7 +656,7 @@ export default function NoteDetail() {
                     </View>
                 )}
 
-                {/* Controls - widoczne tylko po odwróceniu */}
+                
                 {isFlipped && (
                     <View style={styles.studyControls}>
                         <TouchableOpacity style={[styles.controlBtn, styles.btnForgot]} onPress={() => handleNextCard(false)}>
@@ -713,7 +674,6 @@ export default function NoteDetail() {
     }
 
 
-    // --- NORMAL VIEW ---
     return (
         <View style={styles.container}>
             {hasImage && (
@@ -728,7 +688,6 @@ export default function NoteDetail() {
                     <Ionicons name="arrow-back" size={24} color={COLORS.text} />
                 </TouchableOpacity>
                 <View style={styles.navActions}>
-                    {/* Study Button */}
                     {!isEditing && (
                         <TouchableOpacity onPress={startStudy} style={[styles.navBtn, { marginRight: 8, backgroundColor: note.anchor.color + '30', borderColor: note.anchor.color, borderWidth: 1 }]}>
                             <Ionicons name="flash" size={20} color={note.anchor.color} />
@@ -766,14 +725,14 @@ export default function NoteDetail() {
                     </Text>
                     {isEditing ? (
                         <>
-                            {/* 1. Wybór Folderu w Trybie Edycji */}
+
                             <FolderPicker 
                                 currentFolder={editFolder}
                                 setFolder={setEditFolder}
                                 allFolders={folders} 
                             />
                             
-                            {/* 2. Pole Tekstowe do Edycji Treści */}
+
                             <TextInput
                                 value={editText}
                                 onChangeText={setEditText}
@@ -794,7 +753,6 @@ export default function NoteDetail() {
                 </View>
             </ScrollView>
 
-            {/* KOMPONENTY MODALNE */}
             <DeleteModal
                 visible={isDeleteModalVisible}
                 onCancel={() => setIsDeleteModalVisible(false)}
@@ -812,8 +770,7 @@ export default function NoteDetail() {
     );
 }
 
-// --- NOWE/DODATKOWE STYLE DLA TRYBU EDYCJI ---
-// Te style powinny być w NoteDetailStyles, ale dla kompletności są tutaj
+
 const editStyles = StyleSheet.create({
     editInput: {
         minHeight: 150,

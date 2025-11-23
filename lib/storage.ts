@@ -35,13 +35,9 @@ export const deleteNote = async (id: string) => {
   await saveNotes(filtered);
 };
 
-// lib/storage.ts
-
 export const getFolders = async (): Promise<string[]> => {
   try {
     const json = await AsyncStorage.getItem(FOLDERS_KEY);
-    // Zmieniamy domyślne na żądane: Niemiecki i Angielski (plus 'Study' dla ogólnych)
-    // Zmieniam 'Ideas', 'Journal', 'Study' na Twoje wymagania
     return json ? JSON.parse(json) : ['Niemiecki', 'Angielski', 'Study']; 
   } catch (e) {
     return ['Niemiecki', 'Angielski', 'Study'];

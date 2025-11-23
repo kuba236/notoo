@@ -29,34 +29,33 @@ export default function AddScreen() {
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [selectedAnchor, setSelectedAnchor] = useState<Anchor>(DEFAULT_ANCHOR);
-  // Zmieniamy domyślny folder na 'Study' (zgodnie z nową logiką)
+
   const [folder, setFolder] = useState<string>('Study');
   
-  // Pamiętaj, że foldery domyślne to teraz 'Niemiecki', 'Angielski', 'Study'
+
   const [uniqueFolders, setUniqueFolders] = useState<string[]>(['Niemiecki', 'Angielski', 'Study']);
   
-  const { addNewNote, notes, folders: contextFolders } = useNotes(); // Pobieramy 'folders' z kontekstu
+  const { addNewNote, notes, folders: contextFolders } = useNotes(); 
   const router = useRouter();
 
-  // --- 1. LOGIKA GENEROWANIA FOLDERÓW NA PODSTAWIE KONTEKSTU ---
+
   useEffect(() => {
-    // Używamy listy folderów z kontekstu, ponieważ jest ona zawsze aktualna (zawiera również foldery bez notatek)
+
     const foldersList = [...contextFolders].sort((a, b) => a.localeCompare(b));
         
     setUniqueFolders(foldersList);
     
-    // Upewniamy się, że domyślny folder jest poprawny
+
     if (!folder || !foldersList.includes(folder)) {
-      // Ustawiamy domyślny na 'Study', jeśli istnieje, w przeciwnym razie na pierwszy folder
+
       setFolder(foldersList.includes('Study') ? 'Study' : foldersList[0] || 'Uncategorized');
     }
   }, [contextFolders]);
-  // --------------------------------------
+
 
   const handleCreate = async () => {
-    Keyboard.dismiss(); // Ukrycie klawiatury
-    
-    // Filtracja pustych folderów
+    Keyboard.dismiss(); 
+
     const finalFolder = folder.trim() || 'Uncategorized';
     
     if (!text.trim() && !image) return;
@@ -69,9 +68,9 @@ export default function AddScreen() {
       id: Date.now().toString(),
       type: type as 'mixed' | 'image' | 'text' | 'vocab_list',
       content: image || text, 
-      textContent: image ? text : text, // textContent jest używany do tekstu w notatkach obrazkowych/mixed
+      textContent: image ? text : text, 
       createdAt: Date.now(),
-      folder: finalFolder, // Zapisujemy ustaloną wartość
+      folder: finalFolder,
       anchor: selectedAnchor,
     };
 
@@ -93,7 +92,7 @@ export default function AddScreen() {
     }
   };
 
-  // --- renderAnchorPicker (Bez zmian) ---
+
   const renderAnchorPicker = () => (
     <View style={styles.anchorPickerContainer}>
       <Text style={styles.anchorPickerLabel}>Memory Anchor:</Text>
@@ -131,7 +130,7 @@ export default function AddScreen() {
     </View>
   );
 
-  // --- 2. NOWY KOMPONENT WYBORU FOLDERU ---
+
   const renderFolderPicker = () => (
     <View style={styles.folderPicker}>
       <Text style={styles.anchorPickerLabel}>Select/Create Folder:</Text>
@@ -141,7 +140,7 @@ export default function AddScreen() {
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.folderScroll}
       >
-        {/* Opcja stworzenia nowego folderu (INPUT) */}
+
         <View style={styles.folderInputWrapper}>
           <TextInput
             style={[styles.folderInput, styles.folderCreateInput]}
@@ -149,17 +148,15 @@ export default function AddScreen() {
             placeholderTextColor={COLORS.textSec}
             value={folder.trim()}
             onChangeText={setFolder}
-            // Na focus czyścimy tylko jeśli to jest domyślny, ale nie ma sensu
-            // po prostu używamy tego pola do wpisywania nowej wartości
+
             onFocus={() => setFolder(folder || '')} 
           />
         </View>
 
-        {/* Wyświetlanie istniejących folderów (z wyjątkiem tego, który jest aktualnie wpisany/wybrany) */}
         {uniqueFolders.map((f) => (
           <TouchableOpacity
             key={f}
-            // Jeśli folder jest równy f, to jest zaznaczony
+           
             style={[
               styles.folderOption, 
               f === folder.trim() && styles.folderOptionSelected
@@ -167,7 +164,7 @@ export default function AddScreen() {
             onPress={() => {
               Haptics.selectionAsync();
               setFolder(f);
-              Keyboard.dismiss(); // Ukrywamy klawiaturę po wyborze z listy
+              Keyboard.dismiss(); 
             }}
           >
             <Text style={[styles.folderOptionText, f === folder.trim() && { color: COLORS.bg }]}>{f}</Text>
@@ -176,7 +173,6 @@ export default function AddScreen() {
       </ScrollView>
     </View>
   );
-  // --------------------------------------
 
   return (
     <SafeAreaView style={styles.container}>
@@ -239,7 +235,7 @@ export default function AddScreen() {
           <Text style={styles.toolBtnText}>Voice</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.toolBtn} onPress={() => Keyboard.dismiss()}>
-          <Ionicons name="keyboard-outline" size={24} color={COLORS.primary} />
+          <Ionicons name="keypad-outline" size={24} color={COLORS.primary} />
           <Text style={styles.toolBtnText}>Hide KB</Text>
         </TouchableOpacity>
       </View>
@@ -301,7 +297,7 @@ const styles = StyleSheet.create({
   
   folderPicker: { marginBottom: 20 },
   
-  // NOWE STYLE DLA WYBORU FOLDERÓW
+
   folderScroll: {
       gap: 10,
       paddingRight: 20,
@@ -309,7 +305,7 @@ const styles = StyleSheet.create({
   },
   folderInputWrapper: {
       minWidth: 120,
-      marginRight: 5, // Dodatkowy odstęp od listy przycisków
+      marginRight: 5, 
   },
   folderCreateInput: {
       borderWidth: 1,
@@ -323,7 +319,6 @@ const styles = StyleSheet.create({
       borderRadius: 8,
       paddingHorizontal: 14,
       paddingVertical: 10,
-      // Zapewnienie, że przyciski mają spójną wysokość
       height: 40, 
       justifyContent: 'center', 
   },

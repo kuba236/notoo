@@ -11,7 +11,6 @@ import { Note } from '../../types/Note';
 
 const { width } = Dimensions.get('window');
 
-// --- KOMPONENT: MODAL ZARZĄDZANIA FOLDERAMI ---
 interface FolderModalProps {
     visible: boolean;
     onClose: () => void;
@@ -22,7 +21,7 @@ interface FolderModalProps {
 
 const FolderManagementModal: React.FC<FolderModalProps> = ({ visible, onClose, folders, addFolder, deleteFolder }) => {
     const [newFolderName, setNewFolderName] = useState('');
-    const protectedFolders = ['Niemiecki', 'Angielski', 'Study']; // Domyślne foldery
+    const protectedFolders = ['Niemiecki', 'Angielski', 'Study'];
 
     const handleAddFolder = async () => {
         if (!newFolderName.trim()) return;
@@ -80,7 +79,7 @@ const FolderManagementModal: React.FC<FolderModalProps> = ({ visible, onClose, f
                         </TouchableOpacity>
                     </View>
 
-                    {/* Dodawanie folderu */}
+
                     <View style={styles.modalSection}>
                         <Text style={styles.modalSubtitle}>➕ Add New Folder</Text>
                         <View style={styles.inputRow}>
@@ -97,7 +96,7 @@ const FolderManagementModal: React.FC<FolderModalProps> = ({ visible, onClose, f
                         </View>
                     </View>
 
-                    {/* Lista folderów */}
+
                     <View style={styles.modalSection}>
                         <Text style={styles.modalSubtitle}>🗑️ Manage Custom Folders</Text>
                         <ScrollView style={{ maxHeight: 200 }}>
@@ -126,30 +125,29 @@ const FolderManagementModal: React.FC<FolderModalProps> = ({ visible, onClose, f
         </Modal>
     );
 };
-// --- KONIEC KOMPONENTU MODALNEGO ---
+
 
 
 export default function LibraryScreen() {
-  // ZMIANA: Pobieramy foldery i funkcje zarządzania z kontekstu
+
   const { notes, folders, addFolder, deleteFolder } = useNotes(); 
   const [search, setSearch] = useState('');
   const [activeFolder, setActiveFolder] = useState('All');
-  const [isModalVisible, setIsModalVisible] = useState(false); // Stan modalu
+  const [isModalVisible, setIsModalVisible] = useState(false); 
   const router = useRouter();
 
-  // 1. LOGIKA: Wyświetlana lista folderów
+
   const displayFolders = useMemo(() => {
-    // Upewniamy się, że "All" jest na początku, a potem wszystkie foldery z kontekstu
-    // Filtrujemy null/undefined i sortujemy foldery poza 'All'
+
     const sortedFolders = folders.filter(f => f && f.trim() !== '').sort();
     return ['All', ...sortedFolders];
   }, [folders]);
   
-  // 2. LOGIKA FILTROWANIA (BEZ ZMIAN)
+
   const filteredNotes = useMemo(() => {
     let result: Note[] = notes;
     if (activeFolder !== 'All') {
-      // Użyjemy pustego stringa dla notatek bez folderu, jeśli chcemy je filtrować
+
       result = result.filter(n => n.folder === activeFolder);
     }
     if (search) {
@@ -199,7 +197,6 @@ export default function LibraryScreen() {
           <Text style={styles.title}>Knowledge Library</Text>
           
           <View style={styles.controlsRow}>
-            {/* Pole Wyszukiwania */}
             <View style={styles.searchBar}>
               <Ionicons name="search" size={18} color={COLORS.textSec} />
               <TextInput 
@@ -211,7 +208,6 @@ export default function LibraryScreen() {
               />
             </View>
             
-            {/* Przycisk Zarządzania Folderami */}
             <TouchableOpacity 
               onPress={() => setIsModalVisible(true)} 
               style={styles.manageBtn}
@@ -221,10 +217,10 @@ export default function LibraryScreen() {
           </View>
         </View>
         
-        {/* Paski Folderów */}
+
         <View style={styles.folderContainer}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.folderScroll}>
-            {/* Iteracja po folderach z kontekstu */}
+
             {displayFolders.map(f => (
               <TouchableOpacity 
                 key={f} 
@@ -246,7 +242,6 @@ export default function LibraryScreen() {
         <View style={{ height: 100 }} />
       </ScrollView>
       
-      {/* Modal zarządzania */}
       <FolderManagementModal
         visible={isModalVisible}
         onClose={() => setIsModalVisible(false)}
@@ -264,13 +259,12 @@ const styles = StyleSheet.create({
   headerContent: { paddingHorizontal: 20, marginBottom: 12 },
   title: { fontSize: 24, color: COLORS.text, marginBottom: 10 },
   
-  // Nowy styl dla kontroli (search + manage button)
   controlsRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   searchBar: { 
     flexDirection: 'row', alignItems: 'center', 
     backgroundColor: 'rgba(255,255,255,0.1)', 
     borderRadius: 12, paddingHorizontal: 12, height: 40,
-    flex: 1 // Zajmuje dostępną przestrzeń
+    flex: 1 
   },
   searchInput: { flex: 1, marginLeft: 8, color: COLORS.text, fontSize: 16 },
   manageBtn: {
@@ -295,7 +289,7 @@ const styles = StyleSheet.create({
   chipText: { color: COLORS.textSec, fontSize: 13, fontWeight: '500' },
   chipTextActive: { color: COLORS.primary },
   
-  scrollContent: { paddingTop: 10, paddingBottom: 180 }, // Zmniejszona padding top
+  scrollContent: { paddingTop: 10, paddingBottom: 180 },
   masonryContainer: { flexDirection: 'row', paddingHorizontal: 20, gap: 12 },
   column: { flex: 1, gap: 12 },
   
@@ -304,7 +298,6 @@ const styles = StyleSheet.create({
   noteText: { color: COLORS.text, fontSize: 15, lineHeight: 20 },
   noteDate: { color: COLORS.textSec, fontSize: 10, marginTop: 8, textAlign: 'right' },
   
-  // STYLE DLA MODALU
   modalOverlay: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   modalCard: { width: width * 0.9, padding: 20, borderRadius: 20 },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },

@@ -1,19 +1,15 @@
-// lib/file.ts
+
 import * as FileSystem from 'expo-file-system';
 
-// Bezpieczne pobranie katalogu z obejściem problemów z typami
 const getStorageDirectory = (): string => {
   const fileSystemAny = FileSystem as any;
-  
-  // Spróbuj najpierw documentDirectory
+
   let dir = fileSystemAny.documentDirectory;
-  
-  // Jeśli documentDirectory jest null, użyj cacheDirectory
+
   if (!dir) {
     dir = fileSystemAny.cacheDirectory;
   }
   
-  // Jeśli oba są null, użyj fallback
   if (!dir) {
     console.warn('Both documentDirectory and cacheDirectory are null, using fallback');
     return 'file:///tmp/notoo_media/';
@@ -47,7 +43,6 @@ export async function saveFileFromUri(uri: string, ext = 'jpg'): Promise<string>
     
     await ensureDir();
     
-    // Sprawdź czy plik źródłowy istnieje
     const sourceInfo = await FileSystem.getInfoAsync(uri);
     console.log('✅ Source file exists:', sourceInfo.exists);
     
@@ -59,15 +54,13 @@ export async function saveFileFromUri(uri: string, ext = 'jpg'): Promise<string>
     const dest = `${DIR}${name}`;
     console.log('🎯 Destination path:', dest);
     
-    // Użyj copyAsync
     await FileSystem.copyAsync({
       from: uri,
       to: dest
     });
     
     console.log('✅ File copied successfully');
-    
-    // Zweryfikuj że plik został utworzony
+
     const destInfo = await FileSystem.getInfoAsync(dest);
     if (!destInfo.exists) {
       throw new Error('File was not copied successfully');
@@ -94,7 +87,6 @@ export async function deleteFile(uri: string) {
   }
 }
 
-// Funkcja pomocnicza do debugowania
 export async function debugStorage() {
   try {
     console.log('📊 === DEBUG STORAGE ===');
